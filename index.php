@@ -10,6 +10,64 @@ $query = "SELECT * FROM menu_items";
 $result = mysqli_query($conn, $query);
 ?>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#search').on('keyup input', function () {
+            let query = $(this).val();
+            if (query.length > 0) {
+                $.ajax({
+                    url: 'search_suggest.php',
+                    method: 'POST',
+                    data: { query: query },
+                    success: function (data) {
+                        $('#suggestion-box').html(data).removeClass('hidden');
+                    }
+                });
+            } else {
+                $('#suggestion-box').addClass('hidden');
+            }
+        });
+
+        // When user clicks on suggestion
+        $(document).on('click', '.suggestion-item', function () {
+            let text = $(this).text();
+            $('#search').val(text);
+            $('#suggestion-box').addClass('hidden');
+
+            $.ajax({
+                url: 'search_item.php',
+                method: 'POST',
+                data: { query: text },
+                success: function (data) {
+                    $('#menuItems').html(data);
+                }
+            });
+        });
+
+        // Press Enter = show all matching items
+        $('#search').keypress(function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                let query = $(this).val();
+                $('#suggestion-box').addClass('hidden');
+
+                $.ajax({
+                    url: 'search_item.php',
+                    method: 'POST',
+                    data: { query: query },
+                    success: function (data) {
+                        $('#menuItems').html(data);
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+
 <!-- ✅ Hero / Welcome Section -->
 <div class="w-full bg-gray-100 dark:bg-gray-900 py-12">
     <div class="max-w-7xl mx-auto px-4 text-center">
@@ -33,6 +91,17 @@ $result = mysqli_query($conn, $query);
         <p class="text-gray-600 mt-2">
             Choose from a wide variety of classic and contemporary Indian dishes.
         </p>
+    </div>
+</div>
+
+<!-- Search Box -->
+<div class="max-w-2xl mx-auto my-10">
+    <div class="relative">
+        <input type="text" id="search" placeholder="Search food..." autocomplete="off"
+            class="w-full px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm transition" />
+        <div id="suggestion-box"
+            class="absolute left-0 right-0 z-20 bg-white border border-gray-200 dark:border-gray-700 rounded-b-lg shadow-lg mt-1 hidden">
+        </div>
     </div>
 </div>
 
@@ -65,55 +134,73 @@ $result = mysqli_query($conn, $query);
                     <?php echo htmlspecialchars("₹ " . intval($row['price'])); ?>
                 </p>
 
-                <?php if (isset($_SESSION['user_id'])) { ?>
-                <form method="post" action="add_cart.php" class="inline-block">
-                    <input type="hidden" name="type" value="remove">
-                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
-                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none">
-                        -
-                    </button>
-                </form>
-                <?php } else { ?>
-                <a href="login.php"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none inline-block text-center">
-                     -
-                </a>
-                <?php } ?>
+                <div class="flex items-center gap-2 mt-2">
+                    <!-- Remove Button -->
+                    <?php if (isset($_SESSION['user_id'])) { ?>
+                        <form method="post" action="add_cart.php" class="inline-block">
+                            <input type="hidden" name="type" value="remove">
+                            <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
+                            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none"
+                                title="Remove from Cart">
+                                &minus;
+                            </button>
+                        </form>
+                    <?php } else { ?>
+                        <a href="login.php"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none inline-block text-center"
+                            title="Login to remove from Cart">
+                            &minus;
+                        </a>
+                    <?php } ?>
 
-                <!-- Cart Button (non-functional, for display) -->
-                <div class="inline-block">
-                    <button
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none cursor-default">
-                        <?php
-                        // Display the number of items in the cart  by fetching from the database
-                        $cart_query = "SELECT quantity as item_count FROM cart_items WHERE user_id = " . $_SESSION['user_id'] . " AND menu_item_id = " . $row['id'];
-                        $cart_result = mysqli_query($conn, $cart_query);
-                        $cart_data = mysqli_fetch_assoc($cart_result);
-                        echo isset($cart_data['item_count']) ? $cart_data['item_count'] : 0;
-                        ?>
-                    </button>
+                    <!-- Cart Icon & Count -->
+                    <div class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 font-semibold text-gray-800 dark:text-gray-100 select-none"
+                        title="Items in Cart">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-blue-700 dark:text-blue-400"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m4-9l2 9" />
+                        </svg>
+                        <span>
+                            <?php
+                            // Display the number of items in the cart by fetching from the database
+                            $cart_count = 0;
+                            if (isset($_SESSION['user_id'])) {
+                                $cart_query = "SELECT quantity as item_count FROM cart_items WHERE user_id = " . intval($_SESSION['user_id']) . " AND menu_item_id = " . intval($row['id']);
+                                $cart_result = mysqli_query($conn, $cart_query);
+                                $cart_data = mysqli_fetch_assoc($cart_result);
+                                $cart_count = isset($cart_data['item_count']) ? $cart_data['item_count'] : 0;
+                            }
+                            echo $cart_count;
+                            ?>
+                        </span>
+                        <span class="ml-1 text-xs font-normal text-gray-500 dark:text-gray-300">in cart</span>
+                    </div>
+
+                    <!-- Add Button -->
+                    <?php if (isset($_SESSION['user_id'])) { ?>
+                        <form method="post" action="add_cart.php" class="inline-block">
+                            <input type="hidden" name="type" value="add">
+                            <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
+                            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none"
+                                title="Add to Cart">
+                                +
+                            </button>
+                        </form>
+                    <?php } else { ?>
+                        <a href="login.php"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none inline-block text-center"
+                            title="Login to add to Cart">
+                            +
+                        </a>
+                    <?php } ?>
                 </div>
-
-               <?php if (isset($_SESSION['user_id'])) { ?>
-                <form method="post" action="add_cart.php" class="inline-block">
-                    <input type="hidden" name="type" value="add">
-                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
-                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none">
-                        +
-                    </button>
-                </form>
-                 <?php } else { ?>
-                <a href="login.php"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none inline-block text-center">
-                     +
-                </a>
-                <?php } ?>
 
             </div>
         </div>
@@ -122,7 +209,6 @@ $result = mysqli_query($conn, $query);
 
 
 <?php include("inc/footer.php"); ?>
-
 </body>
 
 </html>
