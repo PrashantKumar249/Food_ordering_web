@@ -47,6 +47,7 @@ $result = mysqli_query($conn, $query);
         });
 
         // Press Enter = show all matching items
+
         $('#search').keypress(function (e) {
             if (e.which == 13) {
                 e.preventDefault();
@@ -64,6 +65,22 @@ $result = mysqli_query($conn, $query);
             }
         });
 
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#applyFilters').click(function () {
+            let category = $('#categoryFilter').val();
+            let price = $('#priceFilter').val();
+            $.ajax({
+                url: 'filter_items.php',
+                method: 'POST',
+                data: { type: category, price: price },
+                success: function (data) {
+                    $('#menuItems').html(data);
+                }
+            });
+        });
     });
 </script>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -95,16 +112,49 @@ $result = mysqli_query($conn, $query);
 </div>
 
 <!-- Search Box -->
-<div class="max-w-2xl mx-auto my-10">
-    <div class="relative">
+<div class="max-w-7xl mx-auto my-10 flex flex-col md:flex-row items-center justify-between gap-4">
+    <!-- Search Box -->
+    <div class="w-full md:w-2/3 relative">
         <input type="text" id="search" placeholder="Search food..." autocomplete="off"
             class="w-full px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm transition" />
         <div id="suggestion-box"
             class="absolute left-0 right-0 z-20 bg-white border border-gray-200 dark:border-gray-700 rounded-b-lg shadow-lg mt-1 hidden">
         </div>
     </div>
+    <!-- Filter Buttons -->
+    <!-- Advanced Filter Options -->
+    <div class="w-full md:w-1/3 flex flex-col md:flex-row items-center gap-4">
+        <!-- Category Filter -->
+        <div>
+            <label for="categoryFilter"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-900 mb-1">Category</label>
+            <select id="categoryFilter"
+                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                <option value="all">All</option>
+                <option value="Veg">Veg</option>
+                <option value="Non-Veg">Non-Veg</option>
+            </select>
+        </div>
+        <!-- Price Filter -->
+        <div>
+            <label for="priceFilter"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-900 mb-1">Price</label>
+            <select id="priceFilter"
+                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                <option value="all">All</option>
+                <option value="0-100">₹0 - ₹100</option>
+                <option value="101-200">₹101 - ₹200</option>
+                <option value="201-500">₹201 - ₹500</option>
+                <option value="501-10000">₹501+</option>
+            </select>
+        </div>
+        <!-- Filter Button -->
+        <button id="applyFilters"
+            class="bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-5 rounded-lg shadow-md transition mt-4 md:mt-6">
+            Apply Filters
+        </button>
+    </div>
 </div>
-
 
 <!-- ✅ Menu Items Grid -->
 <div id="menuItems" class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
