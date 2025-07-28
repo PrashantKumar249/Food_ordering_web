@@ -11,6 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $menu_item_id = $_POST['menu_item_id'];
   $quantity = $_POST['quantity'];
   $type = $_POST['type'];
+  $page_name = $_POST['page_name'] ?? 'index';
+
   if ($type == 'add') {
     $stmt = $conn->prepare("SELECT * FROM cart_items WHERE user_id = ? AND menu_item_id = ?");
     $stmt->bind_param("ii", $user_id, $menu_item_id);
@@ -30,7 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $insert->execute();
     }
 
-    header("Location: index.php");
+    if($page_name === 'cart') {
+      header("Location: cart.php");
+    } else {
+      header("Location: index.php");
+    }
   }
   
   if ($type == "remove") {
@@ -56,7 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    header("Location: index.php");
+    if($page_name === 'cart') {
+      header("Location: cart.php");
+    } else {
+      header("Location: index.php");
+    }
     exit();
   }
 }

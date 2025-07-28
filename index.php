@@ -47,7 +47,6 @@ $result = mysqli_query($conn, $query);
         });
 
         // Press Enter = show all matching items
-
         $('#search').keypress(function (e) {
             if (e.which == 13) {
                 e.preventDefault();
@@ -83,182 +82,243 @@ $result = mysqli_query($conn, $query);
         });
     });
 </script>
-<script src="https://cdn.tailwindcss.com"></script>
 
-<!-- ✅ Hero / Welcome Section -->
-<div class="w-full bg-gray-100 dark:bg-gray-900 py-12">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">Welcome to Khana Khazana 🍽️</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
-            Discover mouth-watering Indian dishes, cooked with love and delivered fresh to your doorstep.
-        </p>
-        <a href="#menuItems"
-            class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-5 rounded-lg shadow-md transition">
-            Explore Our Menu
-        </a>
-    </div>
-</div>
-
-<!-- ✅ Menu Section Heading -->
-<div class="w-full px-4 py-6">
-    <div class="max-w-7xl mx-auto text-center mb-8">
-        <h2 class="text-3xl font-semibold text-gray-800">
-            Our Delicious Menu
-        </h2>
-        <p class="text-gray-600 mt-2">
-            Choose from a wide variety of classic and contemporary Indian dishes.
-        </p>
-    </div>
-</div>
-
-<!-- Search Box -->
-<div class="max-w-7xl mx-auto my-10 flex flex-col md:flex-row items-center justify-between gap-4">
-    <!-- Search Box -->
-    <div class="w-full md:w-2/3 relative">
-        <input type="text" id="search" placeholder="Search food..." autocomplete="off"
-            class="w-full px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm transition" />
-        <div id="suggestion-box"
-            class="absolute left-0 right-0 z-20 bg-white border border-gray-200 dark:border-gray-700 rounded-b-lg shadow-lg mt-1 hidden">
-        </div>
-    </div>
-    <!-- Filter Buttons -->
-    <!-- Advanced Filter Options -->
-    <div class="w-full md:w-1/3 flex flex-col md:flex-row items-center gap-4">
-        <!-- Category Filter -->
-        <div>
-            <label for="categoryFilter"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-900 mb-1">Category</label>
-            <select id="categoryFilter"
-                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-                <option value="all">All</option>
-                <option value="Veg">Veg</option>
-                <option value="Non-Veg">Non-Veg</option>
-            </select>
-        </div>
-        <!-- Price Filter -->
-        <div>
-            <label for="priceFilter"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-900 mb-1">Price</label>
-            <select id="priceFilter"
-                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-                <option value="all">All</option>
-                <option value="0-100">₹0 - ₹100</option>
-                <option value="101-200">₹101 - ₹200</option>
-                <option value="201-500">₹201 - ₹500</option>
-                <option value="501-10000">₹501+</option>
-            </select>
-        </div>
-        <!-- Filter Button -->
-        <button id="applyFilters"
-            class="bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-5 rounded-lg shadow-md transition mt-4 md:mt-6">
-            Apply Filters
-        </button>
-    </div>
-</div>
-
-<!-- ✅ Menu Items Grid -->
-<div id="menuItems" class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
-    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-        <div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4">
-            <a href="#">
-                <img class="rounded-t-lg w-full h-40 object-cover mb-4"
-                    src="images/<?php echo htmlspecialchars($row['image']); ?>"
-                    alt="<?php echo htmlspecialchars($row['name']); ?>" />
-            </a>
-            <div>
-                <a href="#">
-                    <div class="flex items-baseline gap-2 mb-2">
-                        <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            <?php echo htmlspecialchars($row['name']); ?>
-                        </h5>
-                        <span class="text-sm text-gray-500 dark:text-gray-300 font-medium px-2 py-1 rounded border"
-                            style="border-width:2px; border-style:solid; border-color:<?php echo ($row['category'] === 'Non-Veg') ? '#dc2626' : '#16a34a'; ?>; color:<?php echo ($row['category'] === 'Non-Veg') ? '#dc2626' : '#16a34a'; ?>">
-                            <?php echo htmlspecialchars($row['category']); ?>
-                        </span>
-                    </div>
-                </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    <?php echo htmlspecialchars($row['description']); ?>
-                </p>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    <?php echo htmlspecialchars("₹ " . intval($row['price'])); ?>
-                </p>
-
-                <div class="flex items-center gap-2 mt-2">
-                    <!-- Remove Button -->
-                    <?php if (isset($_SESSION['user_id'])) { ?>
-                        <form method="post" action="add_cart.php" class="inline-block">
-                            <input type="hidden" name="type" value="remove">
-                            <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
-                            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none"
-                                title="Remove from Cart">
-                                &minus;
-                            </button>
-                        </form>
-                    <?php } else { ?>
-                        <a href="login.php"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none inline-block text-center"
-                            title="Login to remove from Cart">
-                            &minus;
-                        </a>
-                    <?php } ?>
-
-                    <!-- Cart Icon & Count -->
-                    <div class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 font-semibold text-gray-800 dark:text-gray-100 select-none"
-                        title="Items in Cart">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-blue-700 dark:text-blue-400"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m4-9l2 9" />
-                        </svg>
-                        <span>
-                            <?php
-                            // Display the number of items in the cart by fetching from the database
-                            $cart_count = 0;
-                            if (isset($_SESSION['user_id'])) {
-                                $cart_query = "SELECT quantity as item_count FROM cart_items WHERE user_id = " . intval($_SESSION['user_id']) . " AND menu_item_id = " . intval($row['id']);
-                                $cart_result = mysqli_query($conn, $cart_query);
-                                $cart_data = mysqli_fetch_assoc($cart_result);
-                                $cart_count = isset($cart_data['item_count']) ? $cart_data['item_count'] : 0;
-                            }
-                            echo $cart_count;
-                            ?>
-                        </span>
-                        <span class="ml-1 text-xs font-normal text-gray-500 dark:text-gray-300">in cart</span>
-                    </div>
-
-                    <!-- Add Button -->
-                    <?php if (isset($_SESSION['user_id'])) { ?>
-                        <form method="post" action="add_cart.php" class="inline-block">
-                            <input type="hidden" name="type" value="add">
-                            <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
-                            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none"
-                                title="Add to Cart">
-                                +
-                            </button>
-                        </form>
-                    <?php } else { ?>
-                        <a href="login.php"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 focus:outline-none inline-block text-center"
-                            title="Login to add to Cart">
-                            +
-                        </a>
-                    <?php } ?>
-                </div>
-
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 py-20">
+    <div class="absolute inset-0 bg-black opacity-5"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-6">
+                <i class="fas fa-utensils text-white text-3xl"></i>
             </div>
         </div>
-    <?php } ?>
-</div>
+        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            Welcome to 
+            <span class="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                Khana Khazana
+            </span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Discover mouth-watering Indian dishes, cooked with love and delivered fresh to your doorstep. 
+            From traditional favorites to modern twists, we bring authentic flavors to your table.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#menuItems" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <i class="fas fa-utensils mr-2"></i>
+                Explore Our Menu
+            </a>
+            <a href="about.php" class="inline-flex items-center px-8 py-4 border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold rounded-lg transition-all duration-300">
+                <i class="fas fa-info-circle mr-2"></i>
+                Learn More
+            </a>
+        </div>
+    </div>
+</section>
 
+<!-- Features Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                    <i class="fas fa-clock text-orange-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Fast Delivery</h3>
+                <p class="text-gray-600">Hot and fresh food delivered to your doorstep within 30 minutes</p>
+            </div>
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                    <i class="fas fa-leaf text-orange-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Fresh Ingredients</h3>
+                <p class="text-gray-600">We use only the finest and freshest ingredients in all our dishes</p>
+            </div>
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                    <i class="fas fa-star text-orange-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Authentic Taste</h3>
+                <p class="text-gray-600">Traditional recipes passed down through generations for authentic flavors</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Menu Section -->
+<section id="menuItems" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Delicious Menu</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Choose from a wide variety of classic and contemporary Indian dishes, 
+                each prepared with care and authentic spices.
+            </p>
+        </div>
+
+        <!-- Enhanced Search and Filter Section -->
+        <div class="bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+                    <i class="fas fa-search-plus text-orange-500 mr-3"></i>
+                    Find Your Perfect Dish
+                </h3>
+                <p class="text-gray-600">Search by name, ingredients, or filter by category and price</p>
+            </div>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+                <!-- Search Box -->
+                <div class="xl:col-span-2">
+                    <label for="search" class="block text-sm font-semibold text-gray-700 mb-3">
+                        <i class="fas fa-search mr-2 text-orange-500"></i>Search Dishes
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="search" placeholder="Try: biryani, chicken, paneer, spicy..." autocomplete="off"
+                            class="w-full pl-14 pr-4 py-4 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-500 bg-white text-gray-900 shadow-sm transition-all duration-300 text-lg font-medium" />
+                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-orange-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <!-- Contained Search Results -->
+                    <div id="suggestion-box"
+                        class="absolute z-50 bg-white border-2 border-orange-200 rounded-2xl shadow-2xl mt-2 hidden max-h-80 overflow-y-auto w-full max-w-2xl">
+                    </div>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="categoryFilter" class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-filter mr-2 text-orange-500"></i>Category
+                        </label>
+                        <select id="categoryFilter"
+                            class="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl bg-white text-gray-900 focus:ring-4 focus:ring-orange-100 focus:border-orange-500 transition-all duration-300 text-lg font-medium">
+                            <option value="all">🍽️ All Categories</option>
+                            <option value="Veg">🥬 Vegetarian</option>
+                            <option value="Non-Veg">🍗 Non-Vegetarian</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="priceFilter" class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-rupee-sign mr-2 text-orange-500"></i>Price Range
+                        </label>
+                        <select id="priceFilter"
+                            class="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl bg-white text-gray-900 focus:ring-4 focus:ring-orange-100 focus:border-orange-500 transition-all duration-300 text-lg font-medium">
+                            <option value="all">💰 All Prices</option>
+                            <option value="0-100">💸 Budget (₹0 - ₹100)</option>
+                            <option value="101-200">💵 Value (₹101 - ₹200)</option>
+                            <option value="201-500">💎 Premium (₹201 - ₹500)</option>
+                            <option value="501-10000">👑 Luxury (₹501+)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Button -->
+            <div class="mt-6 flex justify-center">
+                <button id="applyFilters"
+                    class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-lg">
+                    <i class="fas fa-magic mr-3"></i>
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Items Grid -->
+        <div id="menuItems" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                    <div class="relative">
+                        <img class="w-full h-48 object-cover" src="images/<?php echo htmlspecialchars($row['image']); ?>"
+                            alt="<?php echo htmlspecialchars($row['name']); ?>" />
+                        <div class="absolute top-4 right-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <?php echo ($row['category'] === 'Non-Veg') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'; ?>">
+                                <i class="fas <?php echo ($row['category'] === 'Non-Veg') ? 'fa-drumstick-bite' : 'fa-leaf'; ?> mr-1"></i>
+                                <?php echo htmlspecialchars($row['category']); ?>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            <?php echo htmlspecialchars($row['name']); ?>
+                        </h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">
+                            <?php echo htmlspecialchars($row['description']); ?>
+                        </p>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-2xl font-bold text-orange-600">
+                                ₹<?php echo number_format($row['price']); ?>
+                            </span>
+                            
+                            <!-- Cart Count Display -->
+                            <div class="flex items-center space-x-2">
+                                <?php
+                                $cart_count = 0;
+                                if (isset($_SESSION['user_id'])) {
+                                    $cart_query = "SELECT quantity as item_count FROM cart_items WHERE user_id = " . intval($_SESSION['user_id']) . " AND menu_item_id = " . intval($row['id']);
+                                    $cart_result = mysqli_query($conn, $cart_query);
+                                    $cart_data = mysqli_fetch_assoc($cart_result);
+                                    $cart_count = isset($cart_data['item_count']) ? $cart_data['item_count'] : 0;
+                                }
+                                ?>
+                                <span class="text-sm text-gray-500">
+                                    <?php echo $cart_count; ?> in cart
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Cart Action Buttons -->
+                        <div class="flex items-center justify-between">
+                            <!-- Remove Button -->
+                            <?php if (isset($_SESSION['user_id'])) { ?>
+                                <form method="post" action="add_cart.php" class="inline-block">
+                                    <input type="hidden" name="type" value="remove">
+                                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
+                                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit"
+                                        class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
+                                        title="Remove from Cart">
+                                        <i class="fas fa-minus text-sm"></i>
+                                    </button>
+                                </form>
+                            <?php } else { ?>
+                                <a href="login.php"
+                                    class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
+                                    title="Login to remove from Cart">
+                                    <i class="fas fa-minus text-sm"></i>
+                                </a>
+                            <?php } ?>
+
+                            <!-- Add Button -->
+                            <?php if (isset($_SESSION['user_id'])) { ?>
+                                <form method="post" action="add_cart.php" class="inline-block">
+                                    <input type="hidden" name="type" value="add">
+                                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
+                                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit"
+                                        class="flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"
+                                        title="Add to Cart">
+                                        <i class="fas fa-plus text-sm"></i>
+                                    </button>
+                                </form>
+                            <?php } else { ?>
+                                <a href="login.php"
+                                    class="flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"
+                                    title="Login to add to Cart">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </a>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</section>
 
 <?php include("inc/footer.php"); ?>
-</body>
-
-</html>
