@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+
 include "inc/db.php";
 include "inc/header.php";
 
@@ -33,68 +35,128 @@ $address = $order['delivery_address'];
 ?>
 
 <!-- MAIN CONTENT WRAPPER -->
-<div class="min-h-screen flex flex-col bg-gray-50 pb-24"> <!-- pb-24 for footer space -->
-    <div class="max-w-4xl mx-auto px-4 flex-grow pt-10">
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">🧾 Order Details</h2>
+<!-- Order Details Page -->
+<section class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Order Details</h1>
+            <p class="text-gray-600">Here’s the summary of your order and what you received</p>
+        </div>
 
-            <div class="mb-4">
-                <p><strong>🆔 Order ID:</strong> #<?php echo $order_id; ?></p>
-                <p><strong>📅 Date:</strong> <?php echo $created_at; ?></p>
-                <p><strong>📍 Delivery Address:</strong> <?php echo nl2br(htmlspecialchars($address)); ?></p>
+        <!-- Order Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <!-- Order Header -->
+            <div class="bg-gradient-to-r from-orange-500 to-red-500 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="text-white">
+                        <h3 class="text-lg font-semibold">Order #<?php echo $order_id; ?></h3>
+                        <p class="text-orange-100 text-sm"><?php echo $created_at; ?></p>
+                    </div>
+                    <div class="text-right text-white">
+                        <div class="text-sm opacity-90">Status</div>
+                        <div class="text-lg font-bold">
+                            <?php echo htmlspecialchars(ucwords(strtolower($order['status']))); ?>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
-            <table class="w-full text-sm text-left border border-gray-300 mt-4">
-                <thead class="bg-gray-100 text-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">Item</th>
-                        <th class="px-4 py-2 border">Quantity</th>
-                        <th class="px-4 py-2 border">Price (₹)</th>
-                        <th class="px-4 py-2 border">Total (₹)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $item_query = "SELECT oi.quantity, oi.price, m.name 
-                                   FROM order_items oi
-                                   JOIN menu_items m ON oi.menu_item_id = m.id
-                                   WHERE oi.order_id = $order_id";
-                    $item_result = mysqli_query($conn, $item_query);
+            <!-- Order Info -->
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-orange-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Delivery Address</p>
+                            <p class="text-gray-900 font-medium"><?php echo nl2br(htmlspecialchars($address)); ?></p>
+                        </div>
+                    </div>
+                </div>
 
-                    $grand_total = 0;
-                    while ($row = mysqli_fetch_assoc($item_result)) {
-                        $name = $row['name'];
-                        $qty = $row['quantity'];
-                        $price = $row['price'];
-                        $total = $qty * $price;
-                        $grand_total += $total;
+                <!-- Order Items Table -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Items Ordered</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border border-gray-200">
+                            <thead class="bg-gray-100 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2 border">Item</th>
+                                    <th class="px-4 py-2 border">Quantity</th>
+                                    <th class="px-4 py-2 border">Price (₹)</th>
+                                    <th class="px-4 py-2 border">Total (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $item_query = "SELECT oi.quantity, oi.price, m.name 
+                                               FROM order_items oi
+                                               JOIN menu_items m ON oi.menu_item_id = m.id
+                                               WHERE oi.order_id = $order_id";
+                                $item_result = mysqli_query($conn, $item_query);
 
-                        echo "<tr>
-                                <td class='px-4 py-2 border'>$name</td>
-                                <td class='px-4 py-2 border'>$qty</td>
-                                <td class='px-4 py-2 border'>₹$price</td>
-                                <td class='px-4 py-2 border'>₹$total</td>
-                              </tr>";
-                    }
+                                $grand_total = 0;
+                                while ($row = mysqli_fetch_assoc($item_result)) {
+                                    $name = htmlspecialchars($row['name']);
+                                    $qty = $row['quantity'];
+                                    $price = $row['price'];
+                                    $total = $qty * $price;
+                                    $grand_total += $total;
 
-                    echo "<tr class='font-semibold bg-gray-50'>
-                            <td colspan='3' class='text-right px-4 py-2 border'>Grand Total</td>
-                            <td class='px-4 py-2 border'>₹$grand_total</td>
-                          </tr>";
-                    ?>
-                </tbody>
-            </table>
+                                    echo "<tr>
+                                            <td class='px-4 py-2 border'>$name</td>
+                                            <td class='px-4 py-2 border'>$qty</td>
+                                            <td class='px-4 py-2 border'>₹$price</td>
+                                            <td class='px-4 py-2 border'>₹$total</td>
+                                          </tr>";
+                                }
+
+                                echo "<tr class='font-semibold bg-gray-50'>
+                                        <td colspan='3' class='text-right px-4 py-2 border'>Grand Total</td>
+                                        <td class='px-4 py-2 border'>₹$grand_total</td>
+                                      </tr>";
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-col md:flex-row md:justify-between md:items-center">
+                    <div class="flex space-x-2">
+                        <a href="order_invoice.php?id=<?= $order['id'] ?>&action=view" target="_blank"
+                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition duration-150 ease-in-out">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12H9m6 0a6 6 0 11-12 0 6 6 0 0112 0z" />
+                            </svg>
+                            View Invoice
+                        </a>
+                        <a href="order_invoice.php?id=<?= $order['id'] ?>&action=download"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg shadow-sm transition duration-150 ease-in-out">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>
+                            Download Invoice
+                        </a>
+                    </div>
+                    <div class="mt-4 md:mt-0 text-right">
+                        <a href="my_orders.php"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+                            ← Back to My Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- give a back  button -->
-    <div class="max-w-4xl mx-auto px-4 mt-6">
-        <a href="my_orders.php" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">
-            ← Back to My Orders
-        </a>
-    </div>
+</section>
 
-    <!-- FIXED FOOTER -->
-    <footer class="bg-gray-800 text-white text-center py-4 w-full fixed bottom-0 left-0 z-50">
-        <p>&copy; <?php echo date('Y'); ?> Khana Khazana. All rights reserved.</p>
-    </footer>
-</div>
+
+<?php
+include "inc/footer.php";
+?>

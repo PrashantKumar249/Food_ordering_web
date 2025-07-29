@@ -105,7 +105,7 @@ $orders_result = $stmt->get_result();
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-500">Status</p>
-                                        <p class="text-gray-900 font-medium">Delivered</p>
+                                        <p class="text-gray-900 font-medium"><?php echo htmlspecialchars(ucwords(strtolower($order['status']))); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -162,10 +162,27 @@ $orders_result = $stmt->get_result();
                                 </div>
                                 
                                 <div class="flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <i class="fas fa-check mr-1"></i>
-                                        Completed
-                                    </span>
+                                    <?php if (strtolower($order['status']) === 'completed'): ?>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-check mr-1"></i>
+                                            Completed
+                                        </span>
+                                    <?php elseif (strtolower($order['status']) === 'pending'): ?>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-hourglass-half mr-1"></i>
+                                            Pending
+                                        </span>
+                                    <?php elseif (strtolower($order['status']) === 'cancelled'): ?>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Cancelled
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <i class="fas fa-info-circle mr-1"></i>
+                                            <?php echo htmlspecialchars($order['status']); ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

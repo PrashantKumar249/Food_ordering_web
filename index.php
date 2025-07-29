@@ -88,26 +88,29 @@ $result = mysqli_query($conn, $query);
     <div class="absolute inset-0 bg-black opacity-5"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div class="mb-8">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-6">
+            <div
+                class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-6">
                 <i class="fas fa-utensils text-white text-3xl"></i>
             </div>
         </div>
         <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Welcome to 
+            Welcome to
             <span class="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                 Khana Khazana
             </span>
         </h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Discover mouth-watering Indian dishes, cooked with love and delivered fresh to your doorstep. 
+            Discover mouth-watering Indian dishes, cooked with love and delivered fresh to your doorstep.
             From traditional favorites to modern twists, we bring authentic flavors to your table.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#menuItems" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <a href="#menuItems"
+                class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 <i class="fas fa-utensils mr-2"></i>
                 Explore Our Menu
             </a>
-            <a href="about.php" class="inline-flex items-center px-8 py-4 border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold rounded-lg transition-all duration-300">
+            <a href="about.php"
+                class="inline-flex items-center px-8 py-4 border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold rounded-lg transition-all duration-300">
                 <i class="fas fa-info-circle mr-2"></i>
                 Learn More
             </a>
@@ -145,13 +148,13 @@ $result = mysqli_query($conn, $query);
 </section>
 
 <!-- Menu Section -->
-<section id="menuItems" class="py-16 bg-gray-50">
+<section class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Section Header -->
         <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Delicious Menu</h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Choose from a wide variety of classic and contemporary Indian dishes, 
+                Choose from a wide variety of classic and contemporary Indian dishes,
                 each prepared with care and authentic spices.
             </p>
         </div>
@@ -165,7 +168,7 @@ $result = mysqli_query($conn, $query);
                 </h3>
                 <p class="text-gray-600">Search by name, ingredients, or filter by category and price</p>
             </div>
-            
+
             <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
                 <!-- Search Box -->
                 <div class="xl:col-span-2">
@@ -173,7 +176,8 @@ $result = mysqli_query($conn, $query);
                         <i class="fas fa-search mr-2 text-orange-500"></i>Search Dishes
                     </label>
                     <div class="relative">
-                        <input type="text" id="search" placeholder="Try: biryani, chicken, paneer, spicy..." autocomplete="off"
+                        <input type="text" id="search" placeholder="Try: biryani, chicken, paneer, spicy..."
+                            autocomplete="off"
                             class="w-full pl-14 pr-4 py-4 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-500 bg-white text-gray-900 shadow-sm transition-all duration-300 text-lg font-medium" />
                         <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                             <i class="fas fa-search text-orange-400 text-xl"></i>
@@ -227,96 +231,9 @@ $result = mysqli_query($conn, $query);
 
         <!-- Menu Items Grid -->
         <div id="menuItems" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                    <div class="relative">
-                        <img class="w-full h-48 object-cover" src="images/<?php echo htmlspecialchars($row['image']); ?>"
-                            alt="<?php echo htmlspecialchars($row['name']); ?>" />
-                        <div class="absolute top-4 right-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <?php echo ($row['category'] === 'Non-Veg') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'; ?>">
-                                <i class="fas <?php echo ($row['category'] === 'Non-Veg') ? 'fa-drumstick-bite' : 'fa-leaf'; ?> mr-1"></i>
-                                <?php echo htmlspecialchars($row['category']); ?>
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            <?php echo htmlspecialchars($row['name']); ?>
-                        </h3>
-                        <p class="text-gray-600 mb-4 line-clamp-2">
-                            <?php echo htmlspecialchars($row['description']); ?>
-                        </p>
-                        
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-orange-600">
-                                ₹<?php echo number_format($row['price']); ?>
-                            </span>
-                            
-                            <!-- Cart Count Display -->
-                            <div class="flex items-center space-x-2">
-                                <?php
-                                $cart_count = 0;
-                                if (isset($_SESSION['user_id'])) {
-                                    $cart_query = "SELECT quantity as item_count FROM cart_items WHERE user_id = " . intval($_SESSION['user_id']) . " AND menu_item_id = " . intval($row['id']);
-                                    $cart_result = mysqli_query($conn, $cart_query);
-                                    $cart_data = mysqli_fetch_assoc($cart_result);
-                                    $cart_count = isset($cart_data['item_count']) ? $cart_data['item_count'] : 0;
-                                }
-                                ?>
-                                <span class="text-sm text-gray-500">
-                                    <?php echo $cart_count; ?> in cart
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Enhanced Cart Action Buttons -->
-                        <div class="flex items-center justify-between">
-                            <!-- Remove Button -->
-                            <?php if (isset($_SESSION['user_id'])) { ?>
-                                <form method="post" action="add_cart.php" class="inline-block">
-                                    <input type="hidden" name="type" value="remove">
-                                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
-                                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit"
-                                        class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
-                                        title="Remove from Cart">
-                                        <i class="fas fa-minus text-sm"></i>
-                                    </button>
-                                </form>
-                            <?php } else { ?>
-                                <a href="login.php"
-                                    class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
-                                    title="Login to remove from Cart">
-                                    <i class="fas fa-minus text-sm"></i>
-                                </a>
-                            <?php } ?>
-
-                            <!-- Add Button -->
-                            <?php if (isset($_SESSION['user_id'])) { ?>
-                                <form method="post" action="add_cart.php" class="inline-block">
-                                    <input type="hidden" name="type" value="add">
-                                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
-                                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit"
-                                        class="flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"
-                                        title="Add to Cart">
-                                        <i class="fas fa-plus text-sm"></i>
-                                    </button>
-                                </form>
-                            <?php } else { ?>
-                                <a href="login.php"
-                                    class="flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"
-                                    title="Login to add to Cart">
-                                    <i class="fas fa-plus text-sm"></i>
-                                </a>
-                            <?php } ?>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
+            <?php while ($row = mysqli_fetch_assoc($result)) {
+                include('inc/menu_card.php');
+            } ?>
         </div>
     </div>
 </section>
