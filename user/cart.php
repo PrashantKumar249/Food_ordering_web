@@ -80,7 +80,7 @@ $result = $query->get_result();
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-12 w-12">
                                                 <img class="h-12 w-12 rounded-lg object-cover" 
-                                                    src="images/<?php echo htmlspecialchars($menu_item['image']); ?>" 
+                                                    src="../assets/images/<?php echo htmlspecialchars($menu_item['image']); ?>" 
                                                     alt="<?php echo htmlspecialchars($menu_item['name']); ?>">
                                             </div>
                                             <div class="ml-4">

@@ -1,7 +1,7 @@
 <?php if (!isset($row)) return; ?>
 <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
     <div class="relative">
-        <img class="w-full h-48 object-cover" src="images/<?php echo htmlspecialchars($row['image']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" />
+        <img class="w-full h-48 object-cover" src="../assets/images/<?php echo htmlspecialchars($row['image']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" />
         <div class="absolute top-4 right-4">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <?php echo ($row['category'] === 'Non-Veg') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'; ?>">
                 <i class="fas <?php echo ($row['category'] === 'Non-Veg') ? 'fa-drumstick-bite' : 'fa-leaf'; ?> mr-1"></i>

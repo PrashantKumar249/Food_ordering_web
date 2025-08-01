@@ -1,7 +1,7 @@
-<?php 
-ob_start(); // Start output buffering
-include 'inc/db.php'; 
-include 'inc/header.php'; 
+<?php
+ ob_start(); // Start output buffering
+include 'inc/db.php';
+include 'inc/header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -23,15 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = "Incorrect email or password.";
     }
     $stmt->close();
-    ob_end_flush(); // Flush output at the end
+     ob_end_flush(); // Flush output at the end
 }
 ?>
 
-<section class="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<section
+    class="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <!-- Logo and Title -->
         <div class="text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-6">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-6">
                 <i class="fas fa-utensils text-white text-2xl"></i>
             </div>
             <h2 class="text-3xl font-bold text-gray-900 mb-2">
@@ -63,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
                         placeholder="Enter your email address">
                 </div>
-
                 <!-- Password Field -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
@@ -73,11 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
                         placeholder="Enter your password">
                 </div>
-
                 <!-- Remember Me and Forgot Password -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input type="checkbox" id="remember" class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
+                        <input type="checkbox" id="remember"
+                            class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
                         <label for="remember" class="ml-2 block text-sm text-gray-700">
                             Remember me
                         </label>
@@ -86,15 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         Forgot password?
                     </a>
                 </div>
-
                 <!-- Submit Button -->
-                <button type="submit" 
+                <button type="submit"
                     class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
                     <i class="fas fa-sign-in-alt mr-2"></i>
                     Sign In
                 </button>
             </form>
-
             <!-- Divider -->
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
@@ -104,30 +103,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="px-2 bg-white text-gray-500">Or continue with</span>
                 </div>
             </div>
-
             <!-- Social Login Buttons -->
             <div class="grid grid-cols-2 gap-3">
-                <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                <button
+                    class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <i class="fab fa-google text-red-500 mr-2"></i>
                     Google
                 </button>
-                <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                <button
+                    class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <i class="fab fa-facebook text-blue-600 mr-2"></i>
                     Facebook
                 </button>
             </div>
-
             <!-- Register Link -->
             <div class="text-center mt-6">
                 <p class="text-sm text-gray-600">
-                    Don't have an account? 
-                    <a href="register.php" class="font-medium text-orange-600 hover:text-orange-500 transition-colors duration-200">
+                    Don't have an account?
+                    <a href="register.php"
+                        class="font-medium text-orange-600 hover:text-orange-500 transition-colors duration-200">
                         Sign up here
                     </a>
                 </p>
             </div>
         </div>
-
         <!-- Back to Home -->
         <div class="text-center">
             <a href="index.php" class="text-sm text-gray-600 hover:text-orange-600 transition-colors duration-200">

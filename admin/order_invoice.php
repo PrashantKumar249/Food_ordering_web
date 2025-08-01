@@ -2,15 +2,15 @@
 session_start();
 ini_set('display_errors', 1);
 require_once("inc/db.php");
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // Validate login and order ID
-if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
+if (!isset($_SESSION['admin_id']) || !isset($_GET['id'])) {
     die("Access denied.");
 }
 
 $order_id = (int)$_GET['id'];
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['admin_id'];
 
 // Fetch order details
 $order_query = "SELECT * FROM orders WHERE id = ? AND user_id = ?";

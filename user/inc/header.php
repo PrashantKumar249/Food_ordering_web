@@ -10,7 +10,9 @@ session_start();
     <meta charset="UTF-8">
     <title>Khana Khazana - Delicious Indian Food Delivery</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Order delicious Indian food online. Fast delivery, fresh ingredients, authentic taste.">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon/favicon.ico">
+    <meta name="description"
+        content="Order delicious Indian food online. Fast delivery, fresh ingredients, authentic taste.">
     <meta name="keywords" content="Indian food, food delivery, online ordering, restaurant">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -46,10 +48,12 @@ session_start();
                 <!-- Brand -->
                 <div class="flex-shrink-0">
                     <a href="index.php" class="flex items-center space-x-2">
-                        <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-utensils text-white text-lg"></i>
                         </div>
-                        <span class="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                        <span
+                            class="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                             Khana Khazana
                         </span>
                     </a>
@@ -57,16 +61,19 @@ session_start();
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.php" class="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                    <a href="index.php"
+                        class="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                         <i class="fas fa-home mr-1"></i>Home
                     </a>
-                    <a href="about.php" class="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                    <a href="about.php"
+                        class="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                         <i class="fas fa-info-circle mr-1"></i>About
                     </a>
 
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <!-- Cart with Badge -->
-                        <a href="cart.php" class="relative text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                        <a href="cart.php"
+                            class="relative text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                             <i class="fas fa-shopping-cart mr-1"></i>Cart
                             <?php
                             // Get cart count
@@ -78,8 +85,9 @@ session_start();
                                 $cart_count = isset($cart_data['total']) ? $cart_data['total'] : 0;
                             }
                             if ($cart_count > 0):
-                            ?>
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                ?>
+                                <span
+                                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                                     <?php echo $cart_count; ?>
                                 </span>
                             <?php endif; ?>
@@ -89,7 +97,8 @@ session_start();
                         <div class="relative" id="profile-dropdown-container">
                             <button id="profile-dropdown-btn" type="button"
                                 class="flex items-center space-x-2 text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
-                                <div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                                <div
+                                    class="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                                 <span><?php echo htmlspecialchars($_SESSION['username']); ?></span>
@@ -97,23 +106,28 @@ session_start();
                             </button>
                             <div id="profile-dropdown-menu"
                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200 hidden">
-                                <a href="profile.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                                <a href="profile.php"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                                     <i class="fas fa-user mr-2"></i>Profile
                                 </a>
-                                <a href="my_orders.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                                <a href="my_orders.php"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                                     <i class="fas fa-box mr-2"></i>My Orders
                                 </a>
                                 <hr class="my-1">
-                                <a href="logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                                <a href="logout.php"
+                                    class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
                                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                                 </a>
                             </div>
                         </div>
                     <?php else: ?>
-                        <a href="login.php" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                        <a href="login.php"
+                            class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
                             <i class="fas fa-sign-in-alt mr-1"></i>Login
                         </a>
-                        <a href="register.php" class="border border-orange-500 text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                        <a href="register.php"
+                            class="border border-orange-500 text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
                             <i class="fas fa-user-plus mr-1"></i>Register
                         </a>
                     <?php endif; ?>
@@ -121,7 +135,8 @@ session_start();
 
                 <!-- Mobile Toggle -->
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-700 hover:text-orange-600 focus:outline-none focus:text-orange-600 transition-colors duration-200">
+                    <button id="mobile-menu-button"
+                        class="text-gray-700 hover:text-orange-600 focus:outline-none focus:text-orange-600 transition-colors duration-200">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -130,15 +145,18 @@ session_start();
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
                 <div class="px-2 pt-2 pb-3 space-y-1">
-                    <a href="index.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                    <a href="index.php"
+                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                         <i class="fas fa-home mr-2"></i>Home
                     </a>
-                    <a href="about.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                    <a href="about.php"
+                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                         <i class="fas fa-info-circle mr-2"></i>About
                     </a>
 
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="cart.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                        <a href="cart.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                             <i class="fas fa-shopping-cart mr-2"></i>Cart
                             <?php if ($cart_count > 0): ?>
                                 <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
@@ -146,20 +164,25 @@ session_start();
                                 </span>
                             <?php endif; ?>
                         </a>
-                        <a href="profile.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                        <a href="profile.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                             <i class="fas fa-user mr-2"></i>Profile
                         </a>
-                        <a href="my_orders.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                        <a href="my_orders.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                             <i class="fas fa-box mr-2"></i>My Orders
                         </a>
-                        <a href="logout.php" class="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 transition-colors duration-200">
+                        <a href="logout.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 transition-colors duration-200">
                             <i class="fas fa-sign-out-alt mr-2"></i>Logout
                         </a>
                     <?php else: ?>
-                        <a href="login.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                        <a href="login.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                             <i class="fas fa-sign-in-alt mr-2"></i>Login
                         </a>
-                        <a href="register.php" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                        <a href="register.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                             <i class="fas fa-user-plus mr-2"></i>Register
                         </a>
                     <?php endif; ?>

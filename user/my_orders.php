@@ -128,7 +128,7 @@ $orders_result = $stmt->get_result();
                                         <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                                             <div class="flex-shrink-0">
                                                 <img class="w-12 h-12 rounded-lg object-cover" 
-                                                    src="images/<?php echo htmlspecialchars($item['image']); ?>" 
+                                                    src="../assets/images/<?php echo htmlspecialchars($item['image']); ?>" 
                                                     alt="<?php echo htmlspecialchars($item['name']); ?>">
                                             </div>
                                             <div class="flex-1 min-w-0">

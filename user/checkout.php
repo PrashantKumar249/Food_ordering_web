@@ -34,6 +34,9 @@ $order_query = "INSERT INTO orders (user_id, delivery_address, created_at)
 mysqli_query($conn, $order_query);
 $order_id = mysqli_insert_id($conn);
 
+// 🟢 INIT total_amount
+$total_amount = 0;
+
 // 4. Insert cart items to order_items
 while ($row = mysqli_fetch_assoc($cart_result)) {
     $menu_item_id = $row['menu_item_id'];
@@ -43,9 +46,15 @@ while ($row = mysqli_fetch_assoc($cart_result)) {
     $insert_item = "INSERT INTO order_items (order_id, menu_item_id, quantity, price) 
                     VALUES ($order_id, $menu_item_id, $quantity, $price)";
     mysqli_query($conn, $insert_item);
+
+    $total_amount += ($quantity * $price); // 🟢 CALCULATE
 }
 
-// 5. Clear cart
+// 🟢 5. Update total_amount in orders table
+$update_total = "UPDATE orders SET total_amount = $total_amount WHERE id = $order_id";
+mysqli_query($conn, $update_total);
+
+// 6. Clear cart
 $clear_cart = "DELETE FROM cart_items WHERE user_id = $user_id";
 mysqli_query($conn, $clear_cart);
 ?>
@@ -111,7 +120,7 @@ mysqli_query($conn, $clear_cart);
                                 <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                                     <div class="flex-shrink-0">
                                         <img class="w-12 h-12 rounded-lg object-cover" 
-                                            src="images/<?php echo htmlspecialchars($row['image']); ?>" 
+                                            src="../assets/images/<?php echo htmlspecialchars($row['image']); ?>" 
                                             alt="<?php echo htmlspecialchars($name); ?>">
                                     </div>
                                     <div class="flex-1 min-w-0">
