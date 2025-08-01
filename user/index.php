@@ -82,7 +82,7 @@ $result = mysqli_query($conn, $query);
         });
     });
 </script>
-
+<script src="main.js"></script>
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 py-20">
     <div class="absolute inset-0 bg-black opacity-5"></div>
