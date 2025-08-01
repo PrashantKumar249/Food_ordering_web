@@ -146,7 +146,7 @@ $address = $order['delivery_address'];
                         </a>
                     </div>
                     <div class="mt-4 md:mt-0 text-right">
-                        <a href="my_orders.php"
+                        <a href="manage_orders.php"
                             class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
                             ← Back to My Orders
                         </a>

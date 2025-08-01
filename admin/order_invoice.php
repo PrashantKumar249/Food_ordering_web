@@ -6,7 +6,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // Validate login and order ID
 if (!isset($_SESSION['admin_id']) || !isset($_GET['id'])) {
-    die("Access denied.");
+    header("Location: login.php");
+    exit();
 }
 
 $order_id = (int)$_GET['id'];

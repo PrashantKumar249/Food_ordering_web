@@ -9,14 +9,46 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
-// Fetch all users
-$sql = "SELECT id, name, email, phone, address, created_at FROM users ORDER BY created_at DESC";
-$result = $conn->query($sql);
+// Get search input
+$search = $_GET['search'] ?? '';
+
+// Modify SQL query if searching
+if (!empty($search)) {
+    $sql = "SELECT id, name, email, phone, address, created_at 
+            FROM users 
+            WHERE name LIKE ? 
+            ORDER BY created_at DESC";
+    $stmt = $conn->prepare($sql);
+    $searchTerm = '%' . $search . '%';
+    $stmt->bind_param("s", $searchTerm);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} else {
+    // Fetch all users
+    $sql = "SELECT id, name, email, phone, address, created_at FROM users ORDER BY created_at DESC";
+    $result = $conn->query($sql);
+}
 ?>
 
 <div class="p-6 sm:ml-64 bg-gray-100 min-h-screen">
     <h1 class="text-3xl font-bold mb-6 text-gray-800">Manage Users</h1>
 
+    <!-- 🔍 Search Form -->
+    <form method="GET" class="mb-4">
+        <div class="flex items-center gap-2">
+            <input type="text" name="search" placeholder="Search by name" value="<?= htmlspecialchars($search) ?>"
+                   class="px-4 py-2 border border-gray-300 rounded w-64 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                Search
+            </button>
+            <?php if (!empty($search)): ?>
+                <a href="manage_users.php" class="text-sm text-gray-600 underline ml-2">Clear</a>
+            <?php endif; ?>
+        </div>
+    </form>
+
+    <!-- 📋 Users Table -->
     <div class="overflow-x-auto shadow rounded-lg">
         <table class="min-w-full bg-white border border-gray-200 text-sm text-left">
             <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
@@ -31,7 +63,7 @@ $result = $conn->query($sql);
                 </tr>
             </thead>
             <tbody class="text-gray-700">
-                <?php if ($result->num_rows > 0): ?>
+                <?php if ($result && $result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr class="hover:bg-gray-50 border-t">
                             <td class="px-6 py-4 border"><?= htmlspecialchars($row['id']) ?></td>
@@ -57,4 +89,29 @@ $result = $conn->query($sql);
         </table>
     </div>
 </div>
+
 <?php include("inc/footer.php"); ?>
+
+<!-- ✅ AJAX Script -->
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.getElementById("userTableBody");
+
+    function fetchUsers(query = "") {
+        fetch("search_users.php?search=" + encodeURIComponent(query))
+            .then(response => response.text())
+            .then(data => {
+                tableBody.innerHTML = data;
+            });
+    }
+
+    // Live search
+    searchInput.addEventListener("input", () => {
+        fetchUsers(searchInput.value);
+    });
+
+    // Initial load
+    window.addEventListener("DOMContentLoaded", () => {
+        fetchUsers(); // Load all users initially
+    });
+</script>
