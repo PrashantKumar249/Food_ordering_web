@@ -18,7 +18,11 @@ if (!isset($_GET['order_id'])) {
     exit();
 }
 
-$order_id = intval($_GET['order_id']);
+
+$secret = "mySecretSalt123";
+$decoded = base64_decode(urldecode($_GET['order_id']));
+$order_id = intval(str_replace($secret, "", $decoded));
+
 
 // Check if order belongs to the user
 $order_query = "SELECT * FROM orders WHERE id = $order_id AND user_id = $user_id";

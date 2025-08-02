@@ -1,5 +1,8 @@
 <?php if (!isset($row))
     return; ?>
+<?php
+$is_wishlisted = in_array($row['id'], $wishlist_items);
+?>
 <div
     class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
     <div class="relative">
@@ -13,6 +16,24 @@
                 <?php echo htmlspecialchars($row['category']); ?>
             </span>
         </div>
+        <!-- wishlist button -->
+        <div class="absolute top-4 left-4">
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <form method="post" action="add_wishlist.php" class="inline-block">
+                    <input type="hidden" name="menu_item_id" value="<?= $row['id']; ?>">
+                    <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
+                    <button type="submit"
+                        class="transition-colors duration-200 <?= $is_wishlisted ? 'text-red-600' : 'text-gray-400 hover:text-orange-500'; ?>">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </form>
+            <?php else: ?>
+                <a href="login.php" class="text-gray-400 hover:text-orange-500 transition-colors duration-200">
+                    <i class="fas fa-heart"></i>
+                </a>
+            <?php endif; ?>
+        </div>
+
     </div>
 
     <div class="p-6">
@@ -31,11 +52,7 @@
                     $cart_count = isset($cart_data['item_count']) ? $cart_data['item_count'] : 0;
                 }
                 ?>
-                <span class="text-sm text-gray-500 cart-count" data-menu-id="<?= $row['id'] ?>"
-                    id="cart-count-<?= $row['id'] ?>">
-                    <?= $cart_count ?> in cart
-                </span>
-
+                <span class="text-sm text-gray-500"><?php echo $cart_count; ?> in cart</span>
             </div>
         </div>
 
@@ -48,12 +65,17 @@
         <div class="flex items-center justify-between">
             <!-- Remove -->
             <?php if (isset($_SESSION['user_id'])) { ?>
-                <button
-                    class="remove-from-cart flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
-                    data-menu-id="<?= $row['id'] ?>" data-user-id="<?= $_SESSION['user_id'] ?>"
-                    data-stock="<?= $row['stock_qty'] ?? 1 ?>" title="Remove from Cart" <?= (isset($row['stock_qty']) && $row['stock_qty'] == 0) ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''; ?>>
-                    <i class="fas fa-minus text-sm"></i>
-                </button>
+                <form method="post" action="add_cart.php" class="inline-block">
+                    <input type="hidden" name="type" value="remove">
+                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
+                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit"
+                        class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
+                        title="Remove from Cart" <?php echo (isset($row['stock_qty']) && $row['stock_qty'] == 0) ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''; ?>>
+                        <i class="fas fa-minus text-sm"></i>
+                    </button>
+                </form>
             <?php } else { ?>
                 <a href="login.php"
                     class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-lg border-2 border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
@@ -64,12 +86,17 @@
 
             <!-- Add -->
             <?php if (isset($_SESSION['user_id'])) { ?>
-                <button type="button"
-                    class="add-to-cart flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"
-                    data-menu-id="<?= $row['id'] ?>" data-user-id="<?= $_SESSION['user_id'] ?>" title="Add to Cart">
-                    <i class="fas fa-plus text-sm"></i>
-                </button>
-
+                <form method="post" action="add_cart.php" class="inline-block">
+                    <input type="hidden" name="type" value="add">
+                    <input type="hidden" name="menu_item_id" value="<?php echo $row['id']; ?>">
+                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit"
+                        class="flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"
+                        title="Add to Cart" <?php echo (isset($row['stock_qty']) && $row['stock_qty'] == 0) ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''; ?>>
+                        <i class="fas fa-plus text-sm"></i>
+                    </button>
+                </form>
             <?php } else { ?>
                 <a href="login.php"
                     class="flex items-center justify-center w-12 h-12 bg-orange-100 hover:bg-orange-200 text-orange-600 hover:text-orange-700 rounded-lg border-2 border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md"

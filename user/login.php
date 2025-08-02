@@ -66,14 +66,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         placeholder="Enter your email address">
                 </div>
                 <!-- Password Field -->
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-lock mr-2 text-orange-500"></i>Password
-                    </label>
-                    <input type="password" name="password" id="password" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
-                        placeholder="Enter your password">
-                </div>
+                <div class="relative">
+    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+        <i class="fas fa-lock mr-2 text-orange-500"></i>Password
+    </label>
+
+    <input type="password" name="password" id="password" required
+        class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+        placeholder="Enter your password">
+
+    <!-- Eye Icon (Toggle Button) -->
+    <button type="button" id="togglePassword"
+        class="absolute inset-y-0 right-0 flex items-center px-3 pt-7 text-gray-500 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-eye"></i>
+    </button>
+</div>
+<script>
+    const passwordInput = document.getElementById("password");
+    const toggleButton = document.getElementById("togglePassword");
+    const icon = toggleButton.querySelector("i");
+
+    toggleButton.addEventListener("click", () => {
+        const isVisible = passwordInput.type === "text";
+        passwordInput.type = isVisible ? "password" : "text";
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+    });
+</script>
+
                 <!-- Remember Me and Forgot Password -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">

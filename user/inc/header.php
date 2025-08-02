@@ -92,6 +92,27 @@ session_start();
                                 </span>
                             <?php endif; ?>
                         </a>
+                        <!-- Wishlist with Badge -->
+                        <a href="wishlist.php"
+                            class="relative text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                            <i class="fas fa-heart mr-1"></i>Wishlist
+                            <?php
+                            // Get wishlist count
+                            $wishlist_count = 0;
+                            if (isset($_SESSION['user_id'])) {
+                                $wishlist_query = "SELECT COUNT(*) as total FROM wishlist_items WHERE user_id = " . intval($_SESSION['user_id']);
+                                $wishlist_result = mysqli_query($conn, $wishlist_query);
+                                $wishlist_data = mysqli_fetch_assoc($wishlist_result);
+                                $wishlist_count = isset($wishlist_data['total']) ? $wishlist_data['total'] : 0;
+                            }
+                            if ($wishlist_count > 0):
+                                ?>
+                                <span
+                                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                    <?php echo $wishlist_count; ?>
+                                </span>
+                            <?php endif; ?>
+                        </a>
 
                         <!-- Profile Dropdown -->
                         <div class="relative" id="profile-dropdown-container">

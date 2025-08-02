@@ -42,7 +42,7 @@ $orders_result = $stmt->get_result();
                 <p class="text-gray-600 mb-8 max-w-md mx-auto">
                     You haven't placed any orders yet. Start exploring our delicious menu and place your first order!
                 </p>
-                <a href="index.php" 
+                <a href="index.php"
                     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
                     <i class="fas fa-utensils mr-2"></i>
                     Order Food Now
@@ -85,7 +85,8 @@ $orders_result = $stmt->get_result();
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-500">Delivery Address</p>
-                                        <p class="text-gray-900 font-medium"><?php echo htmlspecialchars($order['delivery_address']); ?></p>
+                                        <p class="text-gray-900 font-medium">
+                                            <?php echo htmlspecialchars($order['delivery_address']); ?></p>
                                     </div>
                                 </div>
 
@@ -105,7 +106,8 @@ $orders_result = $stmt->get_result();
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-500">Status</p>
-                                        <p class="text-gray-900 font-medium"><?php echo htmlspecialchars(ucwords(strtolower($order['status']))); ?></p>
+                                        <p class="text-gray-900 font-medium">
+                                            <?php echo htmlspecialchars(ucwords(strtolower($order['status']))); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -127,8 +129,8 @@ $orders_result = $stmt->get_result();
                                     <?php while ($item = $items_result->fetch_assoc()): ?>
                                         <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                                             <div class="flex-shrink-0">
-                                                <img class="w-12 h-12 rounded-lg object-cover" 
-                                                    src="../assets/images/<?php echo htmlspecialchars($item['image']); ?>" 
+                                                <img class="w-12 h-12 rounded-lg object-cover"
+                                                    src="../assets/images/<?php echo htmlspecialchars($item['image']); ?>"
                                                     alt="<?php echo htmlspecialchars($item['name']); ?>">
                                             </div>
                                             <div class="flex-1 min-w-0">
@@ -136,7 +138,8 @@ $orders_result = $stmt->get_result();
                                                     <?php echo htmlspecialchars($item['name']); ?>
                                                 </p>
                                                 <p class="text-sm text-gray-500">
-                                                    Qty: <?php echo $item['quantity']; ?> × ₹<?php echo number_format($item['price']); ?>
+                                                    Qty: <?php echo $item['quantity']; ?> ×
+                                                    ₹<?php echo number_format($item['price']); ?>
                                                 </p>
                                             </div>
                                             <div class="text-sm font-semibold text-gray-900">
@@ -148,37 +151,45 @@ $orders_result = $stmt->get_result();
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200">
+                            <div
+                                class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200">
                                 <div class="flex items-center space-x-4">
-                                    <a href="order_details.php?order_id=<?php echo $order['id']; ?>" 
+                                    <?php $secret = "mySecretSalt123";
+                                    $encoded_order_id = urlencode(base64_encode($secret . $order['id'])); ?>
+                                    <a href="order_details.php?order_id=<?php echo $encoded_order_id; ?>"
                                         class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-200">
                                         <i class="fas fa-eye mr-2"></i>
                                         View Details
                                     </a>
-                                    <button class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                    <button
+                                        class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-200">
                                         <i class="fas fa-redo mr-2"></i>
                                         Reorder
                                     </button>
                                 </div>
-                                
+
                                 <div class="flex items-center space-x-2">
                                     <?php if (strtolower($order['status']) === 'completed'): ?>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             <i class="fas fa-check mr-1"></i>
                                             Completed
                                         </span>
                                     <?php elseif (strtolower($order['status']) === 'pending'): ?>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                             <i class="fas fa-hourglass-half mr-1"></i>
                                             Pending
                                         </span>
                                     <?php elseif (strtolower($order['status']) === 'cancelled'): ?>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                             <i class="fas fa-times mr-1"></i>
                                             Cancelled
                                         </span>
                                     <?php else: ?>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                             <i class="fas fa-info-circle mr-1"></i>
                                             <?php echo htmlspecialchars($order['status']); ?>
                                         </span>
@@ -192,7 +203,7 @@ $orders_result = $stmt->get_result();
 
             <!-- Back to Menu -->
             <div class="mt-8 text-center">
-                <a href="index.php" 
+                <a href="index.php"
                     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
                     <i class="fas fa-utensils mr-2"></i>
                     Order More Food

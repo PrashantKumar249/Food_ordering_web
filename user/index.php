@@ -8,6 +8,14 @@ include("inc/header.php");
 // Fetch all menu items
 $query = "SELECT * FROM menu_items";
 $result = mysqli_query($conn, $query);
+
+$wishlist_query = "SELECT menu_item_id FROM wishlist_items WHERE user_id = " . intval($_SESSION['user_id']);
+$wishlist_result = mysqli_query($conn, $wishlist_query);
+$wishlist_items = [];
+
+while ($wishlist_row = mysqli_fetch_assoc($wishlist_result)) {
+    $wishlist_items[] = $wishlist_row['menu_item_id'];
+}    
 ?>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -82,7 +90,59 @@ $result = mysqli_query($conn, $query);
         });
     });
 </script>
-<script src="main.js"></script>
+
+<?php
+$toastMessage = '';
+$messageType = 'added'; // default green
+
+if (isset($_SESSION['flash_message'])) {
+    $toastMessage = $_SESSION['flash_message'];
+    $messageType = $_SESSION['message_type'] ?? 'added';
+
+    unset($_SESSION['flash_message']);
+    unset($_SESSION['message_type']);
+}
+
+// Determine classes based on type
+$toastClasses = $messageType === 'removed'
+    ? 'bg-red-100 border-red-300 text-red-800'
+    : 'bg-green-100 border-green-300 text-green-800';
+?>
+
+<style>
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-slide-in {
+        animation: slideIn 0.3s ease-out;
+    }
+</style>
+<script>
+    setTimeout(() => {
+        const toast = document.getElementById('toast-message');
+        if (toast) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+        }
+    }, 2000); // Hide after 4 seconds
+</script>
+
+<?php if (!empty($toastMessage)): ?>
+    <div id="toast-message"
+        class="fixed bottom-5 right-5 text-sm px-4 py-3 rounded shadow-lg z-50 animate-slide-in <?= $toastClasses ?>">
+        ✅ <?= htmlspecialchars($toastMessage) ?>
+    </div>
+<?php endif; ?>
+
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 py-20">
     <div class="absolute inset-0 bg-black opacity-5"></div>
