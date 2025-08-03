@@ -41,11 +41,7 @@ project/
 ├── include/
 │   ├── db.php                  # Database connection
 │   ├── header.php / footer.php
-<<<<<<< HEAD
-│   ├── admin\_/ admin\_layout.php
-=======
-│   ├── admin\_header.php / admin\_sidebar.php / admin\_footer.php
->>>>>>> a6f8ad517f584c8c66a1a427d3a66aa92a800784
+│   ├── admin\_/admin\_layout.php
 ├── vendor/                     # Composer dependencies
 
 ```
