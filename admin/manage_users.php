@@ -1,13 +1,13 @@
 <?php
 session_start();
 include("../include/db.php");
-include("../include/admin_header.php");
-include("../include/admin_sidebar.php");
+
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
+ob_start(); // ✅ Start buffering after session check
 
 // Get search input
 $search = $_GET['search'] ?? '';
@@ -30,7 +30,6 @@ if (!empty($search)) {
 }
 ?>
 
-<div class="p-6 sm:ml-64 bg-gray-100 min-h-screen">
     <h1 class="text-3xl font-bold mb-6 text-gray-800">Manage Users</h1>
 
     <!-- 🔍 Search Form -->
@@ -75,7 +74,7 @@ if (!empty($search)) {
                             <td class="px-6 py-4 border text-center">
                                 <a href="user_orders.php?user_id=<?= $row['id'] ?>" 
                                    class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-4 py-2 rounded">
-                                    View Orders
+                                    View
                                 </a>
                             </td>
                         </tr>
@@ -88,9 +87,6 @@ if (!empty($search)) {
             </tbody>
         </table>
     </div>
-</div>
-
-<?php include("../include/admin_footer.php"); ?>
 
 <!-- ✅ AJAX Script -->
 <script>
@@ -115,3 +111,7 @@ if (!empty($search)) {
         fetchUsers(); // Load all users initially
     });
 </script>
+<?php
+// 🧩 Final output for layout
+$content = ob_get_clean();
+include("../include/admin_layout.php");

@@ -1,13 +1,12 @@
 <?php
 session_start();
 include("../include/db.php");
-include("../include/admin_header.php");
-include("../include/admin_sidebar.php");
 
 if (empty($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
+ob_start(); // ✅ Start buffering after session check
 
 // Handle delete
 if (isset($_GET['delete'])) {
@@ -21,7 +20,7 @@ if (isset($_GET['delete'])) {
 $result = mysqli_query($conn, "SELECT * FROM menu_items ORDER BY id DESC");
 ?>
 
-<div class="ml-64 p-4">
+<div class="p-4">
     <h2 class="text-2xl font-bold mb-4">🍽 Manage Menu Items</h2>
 
     <!-- Add New Button -->
@@ -80,4 +79,8 @@ $result = mysqli_query($conn, "SELECT * FROM menu_items ORDER BY id DESC");
     </div>
 </div>
 
-<?php include("../include/admin_footer.php"); ?>
+
+<?php
+// 🧩 Final output for layout
+$content = ob_get_clean();
+include("../include/admin_layout.php");

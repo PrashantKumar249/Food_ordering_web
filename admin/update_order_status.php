@@ -1,8 +1,6 @@
 <?php
-
+session_start();
 include("../include/db.php");
-include("../include/admin_header.php");
-include("../include/admin_sidebar.php");
 if (empty($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();

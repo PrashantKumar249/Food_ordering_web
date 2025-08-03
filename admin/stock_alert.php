@@ -1,40 +1,45 @@
 <?php
 session_start();
 include("../include/db.php");
-include("../include/admin_header.php");
-include("../include/admin_sidebar.php");
+
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
+ob_start(); // ✅ Start buffering after session check
 
-// ✅ Your exact query
-// Low stock items
+// Fetch items with low stock (<= 5)
 $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE stock_qty <= 5");
 ?>
 
-<div class="p-6 sm:ml-64 bg-gray-100 min-h-screen">
-    <h1 class="text-2xl font-semibold mb-6">Stock Alerts</h1>
-
-    <!-- ✅ Your exact alert block -->
-    <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-red-500">
-        <h2 class="text-xl font-bold mb-4 text-gray-700">⚠️ Low Stock Alerts</h2>
-        <?php if ($low_stock_items->num_rows > 0): ?>
-            <ul class="space-y-2 text-sm text-gray-600">
-                <?php while ($stock = $low_stock_items->fetch_assoc()): ?>
-                    <li class="flex justify-between border-b py-2">
-                        <span><?php echo htmlspecialchars($stock['name']); ?></span>
-                        <span class="font-semibold text-red-600"><?php echo $stock['stock_qty']; ?> left</span>
-                    </li>
-                <?php endwhile; ?>
-            </ul>
-        <?php else: ?>
-            <p class="text-sm text-green-600">All stocks are sufficient ✅</p>
-        <?php endif; ?>
-    </div>
-
-    
+<!-- Page Content Wrapper -->
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">📦 Stock Alerts</h1>
 </div>
 
-<?php include("../include/admin_footer.php"); ?>
+<!-- Low Stock Alerts -->
+<div class="bg-white rounded-2xl shadow-md border-l-4 border-red-500 p-4 sm:p-6">
+    <h2 class="text-lg sm:text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+        ⚠️ Low Stock Items
+    </h2>
+
+    <?php if ($low_stock_items->num_rows > 0): ?>
+        <ul class="divide-y divide-gray-200 text-sm sm:text-base">
+            <?php while ($item = $low_stock_items->fetch_assoc()): ?>
+                <li class="flex justify-between py-2 sm:py-3">
+                    <span class="text-gray-700 font-medium"><?php echo htmlspecialchars($item['name']); ?></span>
+                    <span class="text-red-600 font-semibold"><?php echo $item['stock_qty']; ?> left</span>
+                </li>
+            <?php endwhile; ?>
+        </ul>
+    <?php else: ?>
+        <p class="text-green-600 font-medium text-sm sm:text-base">✅ All items are sufficiently stocked!</p>
+    <?php endif; ?>
+</div>
+
+<?php
+// 🧩 Final output for layout
+$content = ob_get_clean();
+include("../include/admin_layout.php");

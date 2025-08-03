@@ -1,32 +1,28 @@
 <?php
+session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
-
 include "../include/db.php";
-include "../include/admin_header.php";
 
-// Login check
-if (empty($_SESSION['admin_id'])) {
+if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+ob_start();
 
-// Get order ID from URL
-if (!isset($_GET['order_id'])) {
-    echo "<div class='text-center py-10'>❌ Invalid order.</div>";
+$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+
+if (!$order_id || !$user_id) {
+    echo "<div class='text-center py-10 text-red-600'>❌ Invalid order.</div>";
     exit();
 }
 
-$order_id = intval($_GET['order_id']);
-$user_id = intval($_GET['user_id'] ); // Use session user_id if not provided
-
-// Check if order belongs to the user
 $order_query = "SELECT * FROM orders WHERE id = $order_id AND user_id = $user_id";
 $order_result = mysqli_query($conn, $order_query);
 
 if (mysqli_num_rows($order_result) == 0) {
-    echo "<div class='text-center py-10'>❌ Order not found.</div>";
+    echo "<div class='text-center py-10 text-red-600'>❌ Order not found.</div>";
     exit();
 }
 
@@ -35,54 +31,50 @@ $created_at = date("d M Y, h:i A", strtotime($order['created_at']));
 $address = $order['delivery_address'];
 ?>
 
-<!-- MAIN CONTENT WRAPPER -->
-<!-- Order Details Page -->
-<section class="min-h-screen bg-gray-50 py-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Page Header -->
+<section class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Title -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Order Details</h1>
-            <p class="text-gray-600">Here’s the summary of your order and what you received</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Order Details</h1>
+            <p class="text-gray-600 text-sm sm:text-base">Here’s the summary of the order placed by the user.</p>
         </div>
 
-        <!-- Order Card -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <!-- Order Header -->
+        <!-- Card -->
+        <div class="bg-white rounded-2xl shadow overflow-hidden">
+            <!-- Header -->
             <div class="bg-gradient-to-r from-orange-500 to-red-500 px-6 py-4">
-                <div class="flex items-center justify-between">
-                    <div class="text-white">
-                        <h3 class="text-lg font-semibold">Order #<?php echo $order_id; ?></h3>
-                        <p class="text-orange-100 text-sm"><?php echo $created_at; ?></p>
+                <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center text-black">
+                    <div>
+                        <h3 class="text-lg font-semibold">Order #<?= $order_id ?></h3>
+                        <p class="text-sm opacity-90"><?= $created_at ?></p>
                     </div>
-                    <div class="text-right text-white">
-                        <div class="text-sm opacity-90">Status</div>
+                    <div class="text-sm text-black sm:text-right">
+                        <div class="opacity-80">Status</div>
                         <div class="text-lg font-bold">
-                            <?php echo htmlspecialchars(ucwords(strtolower($order['status']))); ?>
+                            <?= htmlspecialchars(ucwords(strtolower($order['status']))) ?>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-            <!-- Order Info -->
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-map-marker-alt text-orange-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Delivery Address</p>
-                            <p class="text-gray-900 font-medium"><?php echo nl2br(htmlspecialchars($address)); ?></p>
-                        </div>
+            <!-- Body -->
+            <div class="p-6 space-y-6">
+                <!-- Address -->
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center shrink-0">
+                        <i class="fas fa-map-marker-alt text-orange-600"></i>
+                    </div>
+                    <div class="text-sm sm:text-base">
+                        <p class="text-gray-500">Delivery Address</p>
+                        <p class="text-gray-900 font-medium whitespace-pre-line"><?= htmlspecialchars($address) ?></p>
                     </div>
                 </div>
 
-                <!-- Order Items Table -->
-                <div class="border-t border-gray-200 pt-6">
-                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Items Ordered</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left border border-gray-200">
+                <!-- Order Items -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-3">Items Ordered</h4>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                        <table class="min-w-full text-sm text-left">
                             <thead class="bg-gray-100 text-gray-700">
                                 <tr>
                                     <th class="px-4 py-2 border">Item</th>
@@ -124,33 +116,32 @@ $address = $order['delivery_address'];
                         </table>
                     </div>
                 </div>
-                <div class="mt-6 flex flex-col md:flex-row md:justify-between md:items-center">
-                    <div class="flex space-x-2">
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col-reverse md:flex-row md:justify-between md:items-center gap-4 mt-6">
+                    <!-- Left: Invoice Buttons -->
+                    <div class="flex flex-wrap gap-3">
                         <a href="order_invoice.php?id=<?= $order['id'] ?>&action=view" target="_blank"
-                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition duration-150 ease-in-out">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12H9m6 0a6 6 0 11-12 0 6 6 0 0112 0z" />
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-black text-sm font-medium rounded-md shadow-sm transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m6 0a6 6 0 11-12 0 6 6 0 0112 0z" />
                             </svg>
                             View Invoice
                         </a>
                         <a href="order_invoice.php?id=<?= $order['id'] ?>&action=download"
-                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg shadow-sm transition duration-150 ease-in-out">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
+                           class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-black text-sm font-medium rounded-md shadow-sm transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             Download Invoice
                         </a>
                     </div>
-                    <div class="mt-4 md:mt-0 text-right">
-                        <a href="manage_orders.php"
-                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-                            ← Back to My Orders
-                        </a>
-                    </div>
+
+                    <!-- Right: Back Button -->
+                    <a href="manage_orders.php"
+                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-black font-semibold rounded-md shadow-md transition hover:shadow-lg">
+                        ← Back to Orders
+                    </a>
                 </div>
             </div>
         </div>
@@ -159,5 +150,5 @@ $address = $order['delivery_address'];
 
 
 <?php
-include "../include/admin_footer.php";
-?>
+$content = ob_get_clean();
+include("../include/admin_layout.php");

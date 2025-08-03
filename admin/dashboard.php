@@ -1,7 +1,6 @@
 <?php
-include("../include/db.php"); // DB connection
-include("../include/admin_header.php");
-
+include("../include/db.php");
+session_start();
 if (empty($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
@@ -12,8 +11,9 @@ $total_users = $conn->query("SELECT COUNT(*) AS total FROM users")->fetch_assoc(
 $total_revenue = $conn->query("SELECT SUM(total_amount) AS revenue FROM orders WHERE status='delivered'")->fetch_assoc()['revenue'] ?? 0;
 $pending_orders = $conn->query("SELECT COUNT(*) AS total FROM orders WHERE status='Pending'")->fetch_assoc()['total'];
 $delivered_orders = $conn->query("SELECT COUNT(*) AS total FROM orders WHERE status='Delivered'")->fetch_assoc()['total'];
+$total_orders = $conn->query("SELECT COUNT(*) AS total FROM orders")->fetch_assoc()['total'];
 
-// Top 5 best-selling items
+// Top items
 $top_items = $conn->query("
     SELECT m.name, SUM(oi.quantity) AS total_qty
     FROM order_items oi
@@ -23,42 +23,41 @@ $top_items = $conn->query("
     LIMIT 5
 ");
 
-// Low stock items
+// Low stock
 $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE stock_qty <= 5");
+
+// Start buffering
+ob_start();
 ?>
 
-<?php include('../include/admin_sidebar.php'); ?>
-
-<!-- Main Content -->
-<div class="ml-64 mt-16 px-6 py-10 min-h-screen">
+<!-- ✅ Main Dashboard Content -->
+<div class="mt-2 px-2 py-4">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">
         Welcome, <?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?> 🎉
     </h1>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <!-- Cards -->
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-orange-500">
             <h2 class="text-lg font-semibold text-gray-700">👥 Total Users</h2>
             <p class="text-3xl font-bold text-orange-600 mt-2"><?php echo $total_users; ?></p>
         </div>
 
-        <!-- ✅ New Total Orders Card -->
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-orange-500">
             <h2 class="text-lg font-semibold text-gray-700">📦 Total Orders</h2>
-            <p class="text-3xl font-bold text-orange-600 mt-2">
-                <?php
-                $total_orders = $conn->query("SELECT COUNT(*) AS total FROM orders")->fetch_assoc()['total'];
-                echo $total_orders;
-                ?>
-            </p>
+            <p class="text-3xl font-bold text-orange-600 mt-2"><?php echo $total_orders; ?></p>
         </div>
+
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-orange-500">
             <h2 class="text-lg font-semibold text-gray-700">💰 Total Revenue</h2>
             <p class="text-3xl font-bold text-orange-600 mt-2">₹<?php echo number_format($total_revenue, 2); ?></p>
         </div>
+
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-orange-500">
             <h2 class="text-lg font-semibold text-gray-700">🕓 Pending Orders</h2>
             <p class="text-3xl font-bold text-orange-600 mt-2"><?php echo $pending_orders; ?></p>
         </div>
+
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-orange-500">
             <h2 class="text-lg font-semibold text-gray-700">✅ Delivered Orders</h2>
             <p class="text-3xl font-bold text-orange-600 mt-2"><?php echo $delivered_orders; ?></p>
@@ -66,7 +65,7 @@ $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE st
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Top Selling Items -->
+        <!-- Top Items -->
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-orange-500">
             <h2 class="text-xl font-bold mb-4 text-gray-700">🏆 Top 5 Best-Selling Items</h2>
             <?php if ($top_items->num_rows > 0): ?>
@@ -83,7 +82,7 @@ $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE st
             <?php endif; ?>
         </div>
 
-        <!-- Low Stock Alerts -->
+        <!-- Low Stock -->
         <div class="bg-white p-6 rounded-2xl shadow border-l-4 border-red-500">
             <h2 class="text-xl font-bold mb-4 text-gray-700">⚠️ Low Stock Alerts</h2>
             <?php if ($low_stock_items->num_rows > 0): ?>
@@ -102,4 +101,7 @@ $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE st
     </div>
 </div>
 
-<?php include('../include/admin_footer.php'); ?>
+<?php
+$content = ob_get_clean();
+include("../include/admin_layout.php");
+?>

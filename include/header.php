@@ -185,6 +185,15 @@ session_start();
                                 </span>
                             <?php endif; ?>
                         </a>
+                        <a href="wishlist.php"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
+                            <i class="fas fa-heart mr-2"></i>Wishlist
+                            <?php if ($wishlist_count > 0): ?>
+                                <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                                    <?php echo $wishlist_count; ?>
+                                </span>
+                            <?php endif; ?>
+                        </a>
                         <a href="profile.php"
                             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200">
                             <i class="fas fa-user mr-2"></i>Profile
