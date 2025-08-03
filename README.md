@@ -124,7 +124,7 @@ This project is built for learning and demonstration purposes. You are free to u
 
 ## 📷 Flowchart
 
-![Flowchart Overview](https://drive.google.com/file/d/10IcNROiesJJ3GAiMJMUnfQxDrN_nENCp/view?usp=drive_link)
+[Flowchart](https://drive.google.com/file/d/10IcNROiesJJ3GAiMJMUnfQxDrN_nENCp/view?usp=drive_link)
 
 ---
 
