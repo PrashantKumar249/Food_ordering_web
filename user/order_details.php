@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-include "inc/db.php";
-include "inc/header.php";
+include "../include/db.php";
+include "../include/header.php";
 
 // Login check
 if (!isset($_SESSION['user_id'])) {
@@ -40,6 +40,8 @@ $address = $order['delivery_address'];
 
 <!-- MAIN CONTENT WRAPPER -->
 <!-- Order Details Page -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <section class="min-h-screen bg-gray-50 py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Page Header -->
@@ -92,31 +94,58 @@ $address = $order['delivery_address'];
                                     <th class="px-4 py-2 border">Quantity</th>
                                     <th class="px-4 py-2 border">Price (₹)</th>
                                     <th class="px-4 py-2 border">Total (₹)</th>
+                                    <th class="px-4 py-2 border">Rate</th>
+
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                $item_query = "SELECT oi.quantity, oi.price, m.name 
+                                $item_query = "SELECT oi.quantity, oi.price, oi.menu_item_id, m.name 
                                                FROM order_items oi
                                                JOIN menu_items m ON oi.menu_item_id = m.id
                                                WHERE oi.order_id = $order_id";
                                 $item_result = mysqli_query($conn, $item_query);
+                                $rating_map = [];
+                                $rating_query = "SELECT menu_item_id, rating FROM rating WHERE user_id = $user_id";
+                                $rating_result = mysqli_query($conn, $rating_query);
+
+                                while ($r = mysqli_fetch_assoc($rating_result)) {
+                                    $rating_map[$r['menu_item_id']] = $r['rating'];
+                                }
+
 
                                 $grand_total = 0;
                                 while ($row = mysqli_fetch_assoc($item_result)) {
                                     $name = htmlspecialchars($row['name']);
                                     $qty = $row['quantity'];
                                     $price = $row['price'];
+                                    $menu_item_id = $row['menu_item_id'];
                                     $total = $qty * $price;
                                     $grand_total += $total;
+                                    ?>
 
-                                    echo "<tr>
-                                            <td class='px-4 py-2 border'>$name</td>
-                                            <td class='px-4 py-2 border'>$qty</td>
-                                            <td class='px-4 py-2 border'>₹$price</td>
-                                            <td class='px-4 py-2 border'>₹$total</td>
-                                          </tr>";
+                                  <?php  $given_rating = $rating_map[$menu_item_id] ?? 0; ?>
+
+                                    <tr>
+                                        <td class='px-4 py-2 border'><?= $name ?></td>
+                                        <td class='px-4 py-2 border'><?= $qty ?></td>
+                                        <td class='px-4 py-2 border'>₹<?= $price ?></td>
+                                        <td class='px-4 py-2 border'>₹<?= $total ?></td>
+                                        <td class='px-4 py-2 border'>
+                                            <div class="flex justify-center space-x-2 text-3xl">
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <span class="star cursor-pointer <?= ($i <= $given_rating) ? 'text-yellow-400' : 'text-gray-400' ?>" 
+                          data-value="<?= $i ?>" 
+                          data-item-id="<?= $menu_item_id ?>">★</span>
+                <?php endfor; ?>
+            </div>
+                                        </td>
+
+                                    </tr>
+
+                                    <?php
                                 }
+
 
                                 echo "<tr class='font-semibold bg-gray-50'>
                                         <td colspan='3' class='text-right px-4 py-2 border'>Grand Total</td>
@@ -159,8 +188,92 @@ $address = $order['delivery_address'];
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function () {
+        $('.star').on('click', function () {
+            const rating = $(this).data('value');
+            const menu_item_id = $(this).data('item-id');
+            $.ajax({
+                url: 'save_rating.php',
+                method: 'POST',
+                data: {
+                    rating: rating,
+                    user_id: <?php echo $_SESSION['user_id']; ?>,// replace or ensure session exists
+                    menu_item_id: menu_item_id
+                },
+                success: function (res) {
+                    alert("Thank you! You rated: " + rating + " star(s)");
+                }
+            });
+        });
+
+        $('.star').hover(
+            function () {
+                $(this).prevAll().addBack().addClass('text-yellow-400');
+            },
+            function () {
+                $('.star').removeClass('text-yellow-400');
+            }
+        );
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.star').on('click', function () {
+            const $star = $(this);
+            const rating = $star.data('value');
+            const menu_item_id = $star.data('item-id');
+
+            $.ajax({
+                url: 'save_rating.php',
+                method: 'POST',
+                data: {
+                    rating: rating,
+                    user_id: <?= $user_id ?>,
+                    menu_item_id: menu_item_id
+                },
+                success: function (res) {
+                    // Update UI: remove yellow from all, then color up to selected
+                    const starGroup = $star.closest('td').find('.star');
+                    starGroup.removeClass('text-yellow-400').addClass('text-gray-400');
+                    starGroup.each(function () {
+                        if ($(this).data('value') <= rating) {
+                            $(this).removeClass('text-gray-400').addClass('text-yellow-400');
+                        }
+                    });
+
+                    console.log(res);
+                }
+            });
+        });
+
+        $('.star').hover(
+            function () {
+                const $this = $(this);
+                $this.prevAll().addBack().addClass('text-yellow-300');
+            },
+            function () {
+                const $this = $(this);
+                const parent = $this.closest('td');
+                const stars = parent.find('.star');
+
+                stars.each(function () {
+                    const value = $(this).data('value');
+                    const ratedValue = parent.find('.text-yellow-400').length;
+
+                    if (value > ratedValue) {
+                        $(this).removeClass('text-yellow-300');
+                    }
+                });
+
+                $this.removeClass('text-yellow-300');
+            }
+        );
+    });
+</script>
 
 
 <?php
-include "inc/footer.php";
+include "../include/footer.php";
 ?>

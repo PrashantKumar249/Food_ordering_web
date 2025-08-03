@@ -1,5 +1,5 @@
 <?php
-include "inc/db.php";
+include "../include/db.php";
 
 $type = $_POST['type'] ?? 'all';
 $priceRange = $_POST['price'] ?? 'all';
@@ -33,7 +33,7 @@ $result = mysqli_query($conn, $query);
 if (mysqli_num_rows($result) > 0) {
 
     while ($row = mysqli_fetch_assoc($result)) {
-        include 'inc/menu_card.php'; // Include the card template for each item
+        include '../include/menu_card.php'; // Include the card template for each item
     }
 
     echo '</div>'; // ✅ Close the grid

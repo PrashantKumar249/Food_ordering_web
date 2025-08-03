@@ -3,7 +3,7 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include 'inc/db.php';
+include '../include/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -12,8 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $quantity = $_POST['quantity'];
   $type = $_POST['type'];
   $page_name = $_POST['page_name'] ?? 'index';
-  // print_r($_POST);
-  // die();
 
   if ($type == 'add') {
     $stmt = $conn->prepare("SELECT * FROM cart_items WHERE user_id = ? AND menu_item_id = ?");
@@ -34,6 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $insert->execute();
     }
 
+    if($page_name === 'wishlist') {
+      // remove from wishlist if added to cart
+      $delete_wishlist = $conn->prepare("DELETE FROM wishlist_items WHERE user_id = ? AND menu_item_id = ?");
+      $delete_wishlist->bind_param("ii", $user_id, $menu_item_id);
+      $delete_wishlist->execute();
+    } 
     if ($page_name === 'cart') {
       // return a toast message in session
       $_SESSION['flash_message'] = "Item added to cart successfully!";

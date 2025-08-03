@@ -1,7 +1,7 @@
 <?php
 
-include 'inc/db.php';
-include 'inc/admin_header.php';
+include '../include/db.php';
+include '../include/admin_header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -134,5 +134,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </section>
 
-<?php include 'inc/footer.php'; ?>
-</rewritten_file>
+<?php include '../include/footer.php'; ?>

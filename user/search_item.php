@@ -1,5 +1,5 @@
 <?php
-include("inc/db.php");
+include("../include/db.php");
 session_start();
 
 $query = isset($_POST['query']) ? trim($_POST['query']) : '';
@@ -14,7 +14,7 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     // echo '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">';
     while ($row = $result->fetch_assoc()) {
-        include 'inc/menu_card.php'; // outputs a card
+        include '../include/menu_card.php'; // outputs a card
     }
     echo '</div>';
 } else {

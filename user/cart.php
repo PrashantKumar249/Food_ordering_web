@@ -1,6 +1,6 @@
 <?php
-include 'inc/db.php';
-include 'inc/header.php';
+include '../include/db.php';
+include '../include/header.php';
 
 $query = $conn->prepare('SELECT * FROM cart_items WHERE user_id = ?');
 $query->bind_param('i', $_SESSION['user_id']);
@@ -230,4 +230,4 @@ $toastClasses = $messageType === 'removed'
     </div>
 </section>
 
-<?php include 'inc/footer.php'; ?>
+<?php include '../include/footer.php'; ?>

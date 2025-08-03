@@ -1,7 +1,7 @@
 <?php
 ob_start(); // Start output buffering
-include 'inc/db.php';
-include 'inc/header.php';
+include '../include/db.php';
+include '../include/header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
@@ -175,4 +175,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </section>
 
-<?php include 'inc/footer.php'; ?>
+<?php include '../include/footer.php'; ?>

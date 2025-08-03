@@ -1,8 +1,8 @@
 <?php
 session_start();
-include("inc/db.php");
-include("inc/admin_header.php");
-include("inc/admin_sidebar.php");
+include("../include/db.php");
+include("../include/admin_header.php");
+include("../include/admin_sidebar.php");
 
 if (empty($_SESSION['admin_id'])) {
     header("Location: login.php");
@@ -136,4 +136,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 </div>
 
-<?php include("inc/footer.php"); ?>
+<?php include("../include/admin_footer.php"); ?>

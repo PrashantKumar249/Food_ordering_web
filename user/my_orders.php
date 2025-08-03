@@ -1,6 +1,6 @@
 <?php
-include 'inc/db.php';
-include 'inc/header.php';
+include '../include/db.php';
+include '../include/header.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -169,12 +169,13 @@ $orders_result = $stmt->get_result();
                                 </div>
 
                                 <div class="flex items-center space-x-2">
-                                    <?php if (strtolower($order['status']) === 'completed'): ?>
+                                    <?php if (strtolower($order['status']) === 'delivered'): ?>
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             <i class="fas fa-check mr-1"></i>
-                                            Completed
+                                           Delivered
                                         </span>
+
                                     <?php elseif (strtolower($order['status']) === 'pending'): ?>
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -213,4 +214,4 @@ $orders_result = $stmt->get_result();
     </div>
 </section>
 
-<?php include 'inc/footer.php'; ?>
+<?php include '../include/footer.php'; ?>

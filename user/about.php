@@ -1,4 +1,4 @@
-<?php include 'inc/header.php'; ?>
+<?php include '../include/header.php'; ?>
 
 <!-- About Page -->
 <section class="min-h-screen bg-gray-50">
@@ -171,4 +171,4 @@
     </div>
 </section>
 
-<?php include 'inc/footer.php'; ?>
+<?php include '../include/footer.php'; ?>

@@ -1,6 +1,6 @@
 <?php
-include "inc/db.php";
-include "inc/header.php";
+include "../include/db.php";
+include "../include/header.php";
 
 // 1. Check login
 if (!isset($_SESSION['user_id'])) {
@@ -24,7 +24,7 @@ $cart_result = mysqli_query($conn, $cart_query);
 
 if (mysqli_num_rows($cart_result) == 0) {
     echo "<div class='min-h-screen bg-gray-50 flex items-center justify-center'><div class='text-center'><h2 class='text-2xl font-semibold text-gray-900 mb-4'>Your cart is empty.</h2><a href='index.php' class='text-orange-600 hover:text-orange-500'>Continue Shopping</a></div></div>";
-    include "inc/footer.php";
+    include "../include/footer.php";
     exit();
 }
 
@@ -48,6 +48,12 @@ while ($row = mysqli_fetch_assoc($cart_result)) {
     mysqli_query($conn, $insert_item);
 
     $total_amount += ($quantity * $price); // 🟢 CALCULATE
+    // if total amount is zero then show error
+    if ($total_amount <= 0) {
+        echo "<div class='min-h-screen bg-gray-50 flex items-center justify-center'><div class='text-center'><h2 class='text-2xl font-semibold text-red-600 mb-4'>Error: Total amount cannot be zero.</h2><a href='index.php' class='text-orange-600 hover:text-orange-500'>Return to Menu</a></div></div>";
+        include "../include/footer.php";
+        exit();
+    }
 }
 
 // 🟢 5. Update total_amount in orders table
@@ -230,4 +236,4 @@ mysqli_query($conn, $clear_cart);
     </div>
 </section>
 
-<?php include "inc/footer.php"; ?>
+<?php include "../include/footer.php"; ?>

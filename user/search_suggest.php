@@ -1,5 +1,5 @@
 <?php
-include("inc/db.php");
+include("../include/db.php");
 
 if (isset($_POST['query'])) {
     $query = mysqli_real_escape_string($conn, $_POST['query']);

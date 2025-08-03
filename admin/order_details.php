@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-include "inc/db.php";
-include "inc/admin_header.php";
+include "../include/db.php";
+include "../include/admin_header.php";
 
 // Login check
 if (empty($_SESSION['admin_id'])) {
@@ -159,5 +159,5 @@ $address = $order['delivery_address'];
 
 
 <?php
-include "inc/footer.php";
+include "../include/admin_footer.php";
 ?>

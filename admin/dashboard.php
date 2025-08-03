@@ -1,7 +1,7 @@
 <?php
+include("../include/db.php"); // DB connection
+include("../include/admin_header.php");
 
-include("inc/db.php"); // DB connection
-include("inc/admin_header.php");
 if (empty($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
@@ -9,9 +9,7 @@ if (empty($_SESSION['admin_id'])) {
 
 // Fetch stats
 $total_users = $conn->query("SELECT COUNT(*) AS total FROM users")->fetch_assoc()['total'];
-
 $total_revenue = $conn->query("SELECT SUM(total_amount) AS revenue FROM orders WHERE status='delivered'")->fetch_assoc()['revenue'] ?? 0;
-
 $pending_orders = $conn->query("SELECT COUNT(*) AS total FROM orders WHERE status='Pending'")->fetch_assoc()['total'];
 $delivered_orders = $conn->query("SELECT COUNT(*) AS total FROM orders WHERE status='Delivered'")->fetch_assoc()['total'];
 
@@ -29,7 +27,7 @@ $top_items = $conn->query("
 $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE stock_qty <= 5");
 ?>
 
-<?php include('inc/admin_sidebar.php'); ?>
+<?php include('../include/admin_sidebar.php'); ?>
 
 <!-- Main Content -->
 <div class="ml-64 mt-16 px-6 py-10 min-h-screen">
@@ -104,4 +102,4 @@ $low_stock_items = $conn->query("SELECT name, stock_qty FROM menu_items WHERE st
     </div>
 </div>
 
-<?php include('inc/footer.php'); ?>
+<?php include('../include/admin_footer.php'); ?>

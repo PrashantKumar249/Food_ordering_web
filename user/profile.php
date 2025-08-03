@@ -1,6 +1,6 @@
 <?php
-include 'inc/db.php';
-include 'inc/header.php';
+include '../include/db.php';
+include '../include/header.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -227,4 +227,4 @@ $cart_items = $cart_result->fetch_assoc()['cart_items'] ?? 0;
     </div>
 </section>
 
-<?php include 'inc/footer.php'; ?>
+<?php include '../include/footer.php'; ?>

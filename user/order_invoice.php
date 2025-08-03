@@ -1,7 +1,7 @@
 <?php
 session_start();
 ini_set('display_errors', 1);
-require_once("inc/db.php");
+require_once("../include/db.php");
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Validate login and order ID

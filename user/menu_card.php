@@ -2,7 +2,13 @@
     return; ?>
 <?php
 $is_wishlisted = in_array($row['id'], $wishlist_items);
+
+$menu_id = $row['id'];
+$rating_data = $ratings[$menu_id] ?? ['average' => 0, 'total' => 0];
+$average = $rating_data['average'];
+$total = $rating_data['total'];
 ?>
+
 <div
     class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
     <div class="relative">
@@ -34,11 +40,36 @@ $is_wishlisted = in_array($row['id'], $wishlist_items);
             <?php endif; ?>
         </div>
 
+
     </div>
+
 
     <div class="p-6">
         <h3 class="text-xl font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($row['name']); ?></h3>
         <p class="text-gray-600 mb-4 line-clamp-2"><?php echo htmlspecialchars($row['description']); ?></p>
+
+        <div class="flex items-center space-x-2">
+            <div class="relative flex">
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <div class="relative">
+                        <span class="text-gray-300 text-xl">★</span>
+                        <?php
+                        $fill = 0;
+                        if ($average >= $i) {
+                            $fill = 100;
+                        } elseif ($average > ($i - 1)) {
+                            $fill = ($average - ($i - 1)) * 100;
+                        }
+                        ?>
+                        <span class="text-yellow-400 text-xl absolute top-0 left-0 overflow-hidden"
+                            style="width: <?= $fill ?>%">★</span>
+                    </div>
+                <?php endfor; ?>
+
+                <span class="text-sm text-gray-600">(<?= number_format($average, 1) ?> | <?= $total ?> ratings)</span>
+
+            </div>
+        </div>
 
         <div class="flex items-center justify-between mb-4">
             <span class="text-2xl font-bold text-orange-600">₹<?php echo number_format($row['price']); ?></span>

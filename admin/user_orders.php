@@ -1,8 +1,8 @@
 <?php
 session_start();
-include("inc/db.php");
-include("inc/admin_header.php");
-include("inc/admin_sidebar.php");
+include("../include/db.php");
+include("../include/admin_header.php");
+include("../include/admin_sidebar.php");
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
@@ -62,4 +62,4 @@ $orders = $order_stmt->get_result();
     </div>
 </div>
 
-<?php include("inc/footer.php"); ?>
+<?php include("../include/admin_footer.php"); ?>

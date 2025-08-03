@@ -1,21 +1,39 @@
 <?php
-// inc/db.php: Database connection
-include("inc/db.php");
+// ../include/db.php: Database connection
+include("../include/db.php");
 
-// inc/header.php: Navigation bar with opening <html>, <head>, and <body> tags
-include("inc/header.php");
+// ../include/header.php: Navigation bar with opening <html>, <head>, and <body> tags
+include("../include/header.php");
 
 // Fetch all menu items
 $query = "SELECT * FROM menu_items";
 $result = mysqli_query($conn, $query);
 
-$wishlist_query = "SELECT menu_item_id FROM wishlist_items WHERE user_id = " . intval($_SESSION['user_id']);
-$wishlist_result = mysqli_query($conn, $wishlist_query);
-$wishlist_items = [];
+$rating_query = "SELECT menu_item_id, COUNT(*) as total_ratings, AVG(rating) as average_rating FROM rating GROUP BY menu_item_id";
+$rating_result = $conn->query($rating_query);
 
-while ($wishlist_row = mysqli_fetch_assoc($wishlist_result)) {
-    $wishlist_items[] = $wishlist_row['menu_item_id'];
-}    
+$ratings = [];
+while ($row = $rating_result->fetch_assoc()) {
+    $menu_id = $row['menu_item_id'];
+    $ratings[$menu_id] = [
+        'average' => round($row['average_rating'], 1),
+        'total' => $row['total_ratings']
+    ];
+}
+
+if (!empty($_SESSION['user_id'])) {
+    // Fetch wishlist items for the logged-in user)
+    $wishlist_query = "SELECT menu_item_id FROM wishlist_items WHERE user_id = " . intval($_SESSION['user_id']);
+    $wishlist_result = mysqli_query($conn, $wishlist_query);
+    $wishlist_items = [];
+
+    while ($wishlist_row = mysqli_fetch_assoc($wishlist_result)) {
+        $wishlist_items[] = $wishlist_row['menu_item_id'];
+    }
+} else {
+    $wishlist_items = [];
+}
+
 ?>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -292,10 +310,10 @@ $toastClasses = $messageType === 'removed'
         <!-- Menu Items Grid -->
         <div id="menuItems" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <?php while ($row = mysqli_fetch_assoc($result)) {
-                include('inc/menu_card.php');
+                include('menu_card.php');
             } ?>
         </div>
     </div>
 </section>
 
-<?php include("inc/footer.php"); ?>
+<?php include("../include/footer.php"); ?>
